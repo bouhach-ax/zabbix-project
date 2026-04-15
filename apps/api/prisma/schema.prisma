@@ -1,0 +1,282 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PlanType {
+  STARTER
+  PROFESSIONAL
+  ENTERPRISE
+  ON_PREMISE
+}
+
+enum OsType {
+  LINUX_RHEL
+  LINUX_UBUNTU
+  LINUX_DEBIAN
+  LINUX_SUSE
+  WINDOWS
+  AIX
+  OTHER
+}
+
+enum HostStatus {
+  ONBOARDING
+  ACTIVE
+  MAINTENANCE
+  DECOMMISSIONED
+}
+
+enum JobStatus {
+  PENDING
+  DETECTING
+  SCRIPT_GENERATED
+  AGENT_DEPLOYED
+  HOST_DECLARED
+  OS_TEMPLATE_APPLIED
+  OS_VALIDATED
+  WAITING_APP_DECLARATION
+  APPS_CONFIGURING
+  SUCCESS
+  FAILED
+}
+
+enum UserRole {
+  ADMIN
+  MONITORING_ENGINEER
+  NOC_OPERATOR
+  MANAGER
+  READONLY
+}
+
+enum RuleType {
+  TOPOLOGICAL
+  TEMPORAL
+  TAG_BASED
+  CUSTOM
+}
+
+model Tenant {
+  id               String            @id @default(cuid())
+  name             String
+  slug             String            @unique
+  plan             PlanType          @default(STARTER)
+  isActive         Boolean           @default(true)
+  maxHosts         Int               @default(500)
+  maxInstances     Int               @default(2)
+  zabbixInstances  ZabbixInstance[]
+  users            User[]
+  hosts            ManagedHost[]
+  templates        ManagedTemplate[]
+  correlationRules CorrelationRule[]
+  services         BusinessService[]
+  slaReports       SlaReport[]
+  auditLogs        AuditLog[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([slug])
+}
+
+model User {
+  id           String     @id @default(cuid())
+  tenantId     String
+  email        String
+  passwordHash String
+  firstName    String
+  lastName     String
+  role         UserRole   @default(NOC_OPERATOR)
+  isActive     Boolean    @default(true)
+  lastLoginAt  DateTime?
+  tenant       Tenant     @relation(fields: [tenantId], references: [id])
+  auditLogs    AuditLog[]
+  createdAt    DateTime   @default(now())
+
+  @@unique([tenantId, email])
+}
+
+model ZabbixInstance {
+  id                String            @id @default(cuid())
+  tenantId          String
+  label             String
+  apiUrl            String
+  apiTokenEncrypted String
+  version           String?
+  isActive          Boolean           @default(true)
+  lastHealthCheck   DateTime?
+  healthStatus      String?
+  tenant            Tenant            @relation(fields: [tenantId], references: [id])
+  hosts             ManagedHost[]
+  templates         ManagedTemplate[]
+  services          BusinessService[]
+  createdAt         DateTime          @default(now())
+
+  @@index([tenantId])
+}
+
+model ManagedHost {
+  id                String           @id @default(cuid())
+  tenantId          String
+  zabbixInstanceId  String
+  zabbixHostId      String?
+  hostname          String
+  ipAddress         String
+  os                OsType?
+  osVersion         String?
+  agentVersion      String?
+  agentPort         Int              @default(10050)
+  declaredRole      String?
+  status            HostStatus       @default(ONBOARDING)
+  location          String?
+  tags              Json             @default("[]")
+  hostGroupIds      Json             @default("[]")
+  provisioningJob   ProvisioningJob?
+  assignedTemplates HostTemplate[]
+  tenant            Tenant           @relation(fields: [tenantId], references: [id])
+  instance          ZabbixInstance   @relation(fields: [zabbixInstanceId], references: [id])
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@index([tenantId, status])
+  @@index([tenantId, zabbixInstanceId])
+}
+
+model ProvisioningJob {
+  id              String      @id @default(cuid())
+  hostId          String      @unique
+  status          JobStatus   @default(PENDING)
+  currentStep     String      @default("Initialisation")
+  detectedOs      Json?
+  generatedScript String?     @db.Text
+  steps           Json        @default("[]")
+  errorCode       String?
+  errorMessage    String?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  host            ManagedHost @relation(fields: [hostId], references: [id])
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model ManagedTemplate {
+  id               String         @id @default(cuid())
+  tenantId         String
+  zabbixInstanceId String
+  zabbixTemplateId String?
+  name             String
+  internalName     String
+  targetApp        String
+  targetOs         OsType
+  description      String?
+  version          Int            @default(1)
+  prerequisites    Json           @default("[]")
+  macros           Json           @default("[]")
+  items            Json           @default("[]")
+  triggers         Json           @default("[]")
+  scripts          Json           @default("[]")
+  valueMaps        Json           @default("[]")
+  discoveryRules   Json           @default("[]")
+  validationRules  Json           @default("[]")
+  isShared         Boolean        @default(false)
+  isSystem         Boolean        @default(false)
+  createdBy        String
+  deployedAt       DateTime?
+  tenant           Tenant         @relation(fields: [tenantId], references: [id])
+  instance         ZabbixInstance @relation(fields: [zabbixInstanceId], references: [id])
+  hostTemplates    HostTemplate[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@unique([tenantId, zabbixInstanceId, internalName])
+}
+
+model HostTemplate {
+  id         String          @id @default(cuid())
+  hostId     String
+  templateId String
+  appliedAt  DateTime        @default(now())
+  host       ManagedHost     @relation(fields: [hostId], references: [id])
+  template   ManagedTemplate @relation(fields: [templateId], references: [id])
+
+  @@unique([hostId, templateId])
+}
+
+model CorrelationRule {
+  id         String   @id @default(cuid())
+  tenantId   String
+  name       String
+  type       RuleType @default(TEMPORAL)
+  conditions Json
+  timeWindow Int      @default(120)
+  priority   Int      @default(0)
+  isActive   Boolean  @default(true)
+  tenant     Tenant   @relation(fields: [tenantId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model BusinessService {
+  id               String             @id @default(cuid())
+  tenantId         String
+  zabbixInstanceId String
+  zabbixServiceId  String?
+  name             String
+  description      String?
+  slaTarget        Float              @default(99.9)
+  weightedHealth   Boolean            @default(false)
+  components       ServiceComponent[]
+  slaReports       SlaReport[]
+  tenant           Tenant             @relation(fields: [tenantId], references: [id])
+  instance         ZabbixInstance     @relation(fields: [zabbixInstanceId], references: [id])
+  createdAt        DateTime           @default(now())
+}
+
+model ServiceComponent {
+  id            String          @id @default(cuid())
+  serviceId     String
+  zabbixHostId  String
+  zabbixItemIds Json            @default("[]")
+  weight        Float           @default(1.0)
+  label         String?
+  service       BusinessService @relation(fields: [serviceId], references: [id])
+}
+
+model SlaReport {
+  id           String          @id @default(cuid())
+  tenantId     String
+  serviceId    String
+  periodFrom   DateTime
+  periodTo     DateTime
+  availability Float
+  slaTarget    Float
+  isCompliant  Boolean
+  incidents    Json            @default("[]")
+  summary      String?         @db.Text
+  pdfPath      String?
+  generatedAt  DateTime        @default(now())
+  tenant       Tenant          @relation(fields: [tenantId], references: [id])
+  service      BusinessService @relation(fields: [serviceId], references: [id])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  tenantId   String
+  userId     String
+  action     String
+  entityType String
+  entityId   String
+  before     Json?
+  after      Json?
+  comment    String?
+  ipAddress  String
+  userAgent  String?
+  timestamp  DateTime @default(now())
+  tenant     Tenant   @relation(fields: [tenantId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([tenantId, timestamp])
+  @@index([tenantId, entityType, entityId])
+}

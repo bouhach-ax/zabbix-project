@@ -1,0 +1,102 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: zabbixpilot-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: zabbixpilot
+      POSTGRES_USER: zabbixpilot
+      POSTGRES_PASSWORD: zabbixpilot_dev_pass
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U zabbixpilot -d zabbixpilot']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: zabbixpilot-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass redis_dev_pass
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', '-a', 'redis_dev_pass', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    image: nginx:alpine
+    container_name: zabbixpilot-nginx
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+      - web
+    healthcheck:
+      test: ['CMD', 'nginx', '-t']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  api:
+    build:
+      context: .
+      dockerfile: infra/docker/api.Dockerfile
+    container_name: zabbixpilot-api
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://zabbixpilot:zabbixpilot_dev_pass@postgres:5432/zabbixpilot
+      REDIS_URL: redis://:redis_dev_pass@redis:6379
+      NODE_ENV: development
+    ports:
+      - '3000:3000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./apps/api:/app/apps/api:delegated
+      - /app/apps/api/node_modules
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:3000/api/health || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  web:
+    build:
+      context: .
+      dockerfile: infra/docker/web.Dockerfile
+    container_name: zabbixpilot-web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      VITE_API_URL: http://localhost:3000
+    ports:
+      - '5173:5173'
+    depends_on:
+      - api
+    volumes:
+      - ./apps/web:/app/apps/web:delegated
+      - /app/apps/web/node_modules
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local

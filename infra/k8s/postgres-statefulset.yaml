@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zabbixpilot-postgres
+  namespace: zabbixpilot
+spec:
+  serviceName: zabbixpilot-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: zabbixpilot-postgres
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: zabbixpilot-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: zabbixpilot
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: zabbixpilot-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: zabbixpilot-secrets
+                  key: POSTGRES_PASSWORD
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          readinessProbe:
+            exec:
+              command: ['pg_isready', '-U', 'zabbixpilot']
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests: { cpu: 250m, memory: 512Mi }
+            limits: { cpu: "1", memory: 1Gi }
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes: ['ReadWriteOnce']
+        resources:
+          requests:
+            storage: 20Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zabbixpilot-postgres
+  namespace: zabbixpilot
+spec:
+  selector:
+    app.kubernetes.io/name: zabbixpilot-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+  type: ClusterIP

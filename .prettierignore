@@ -1,0 +1,7 @@
+dist/
+node_modules/
+coverage/
+.turbo/
+prisma/migrations/
+*.sh.tmpl
+*.ps1.tmpl

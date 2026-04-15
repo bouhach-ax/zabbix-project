@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npx prisma:*)",
+      "Bash(DATABASE_URL=\"postgresql://zabbixpilot:zabbixpilot_dev_pass@localhost:5432/zabbixpilot\" npx prisma:*)",
+      "Bash(npx tsc:*)",
+      "Bash(docker compose:*)",
+      "Bash(cp .env.example .env)",
+      "Bash(sed -i '' 's|<256-bit-random-hex-string>|a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2|g' .env)",
+      "Bash(sed -i '' 's|<256-bit-random-hex-string-DIFFERENT-from-JWT_SECRET>|b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3|g' .env)",
+      "Bash(sed -i '' 's|<64-hex-chars-exactly>|aabbccddeeff00112233445566778899aabbccddeeff00112233445566778899|g' .env)",
+      "Bash(npx vitest:*)",
+      "Bash(DATABASE_URL=\"postgresql://x:y@localhost:5432/z\" npx prisma validate)",
+      "Bash(xargs ls *)",
+      "Bash(node -e ' *)"
+    ]
+  }
+}

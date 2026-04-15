@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zabbixpilot-redis
+  namespace: zabbixpilot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: zabbixpilot-redis
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: zabbixpilot-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          command: ['redis-server', '--appendonly', 'yes', '--requirepass', '$(REDIS_PASSWORD)', '--maxmemory', '256mb', '--maxmemory-policy', 'allkeys-lru']
+          ports:
+            - containerPort: 6379
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: zabbixpilot-secrets
+                  key: REDIS_PASSWORD
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits: { cpu: 500m, memory: 512Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zabbixpilot-redis
+  namespace: zabbixpilot
+spec:
+  selector:
+    app.kubernetes.io/name: zabbixpilot-redis
+  ports:
+    - port: 6379
+      targetPort: 6379
+  type: ClusterIP
