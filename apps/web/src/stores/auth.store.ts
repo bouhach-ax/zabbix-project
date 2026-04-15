@@ -1,5 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import type { Session, User as SupabaseUser } from '@supabase/supabase-js'
+import type { Profile } from '@/lib/supabase'
 
 export interface User {
   id: string
@@ -11,36 +13,46 @@ export interface User {
 }
 
 interface AuthState {
-  accessToken: string | null
-  refreshToken: string | null
+  session: Session | null
   user: User | null
   isAuthenticated: boolean
-  setTokens: (accessToken: string, refreshToken: string) => void
-  setUser: (user: User) => void
-  login: (accessToken: string, refreshToken: string, user: User) => void
+  setSession: (session: Session | null, profile?: Profile | null) => void
   logout: () => void
+}
+
+function mapProfile(supabaseUser: SupabaseUser, profile: Profile | null): User {
+  return {
+    id: supabaseUser.id,
+    email: supabaseUser.email ?? '',
+    firstName: profile?.first_name ?? '',
+    lastName: profile?.last_name ?? '',
+    role: profile?.role ?? 'NOC_OPERATOR',
+    tenantId: profile?.tenant_id ?? '',
+  }
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      accessToken: null,
-      refreshToken: null,
+      session: null,
       user: null,
       isAuthenticated: false,
 
-      setTokens: (accessToken: string, refreshToken: string) =>
-        set({ accessToken, refreshToken, isAuthenticated: true }),
-
-      setUser: (user: User) => set({ user }),
-
-      login: (accessToken: string, refreshToken: string, user: User) =>
-        set({ accessToken, refreshToken, user, isAuthenticated: true }),
+      setSession: (session: Session | null, profile?: Profile | null) => {
+        if (session?.user) {
+          set({
+            session,
+            user: mapProfile(session.user, profile ?? null),
+            isAuthenticated: true,
+          })
+        } else {
+          set({ session: null, user: null, isAuthenticated: false })
+        }
+      },
 
       logout: () =>
         set({
-          accessToken: null,
-          refreshToken: null,
+          session: null,
           user: null,
           isAuthenticated: false,
         }),
@@ -48,10 +60,8 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'zabbixpilot-auth',
       partialize: (state) => ({
-        accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
         user: state.user,
-        isAuthenticated: state.accessToken !== null,
+        isAuthenticated: state.isAuthenticated,
       }),
     },
   ),

@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Bell, ChevronRight, LogOut, Settings, User } from 'lucide-react'
 import {
   DropdownMenu,
@@ -9,6 +9,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
+import { useAuthStore } from '@/stores/auth.store'
+import { supabase } from '@/lib/supabase'
 
 /**
  * Maps route segments to readable breadcrumb labels.
@@ -29,6 +31,19 @@ const ROUTE_LABELS: Record<string, string> = {
 
 function TopBar() {
   const location = useLocation()
+  const navigate = useNavigate()
+  const user = useAuthStore((s) => s.user)
+  const storeLogout = useAuthStore((s) => s.logout)
+
+  const initials = user
+    ? ((user.firstName?.[0] ?? user.email?.[0]) ?? 'U').toUpperCase()
+    : 'U'
+
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    storeLogout()
+    navigate('/login')
+  }
 
   const segments = location.pathname.split('/').filter(Boolean)
   const breadcrumbs = segments.map((seg) => ROUTE_LABELS[seg] ?? seg)
@@ -67,22 +82,22 @@ function TopBar() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-card text-xs font-medium text-gray-300 transition-colors duration-fast hover:bg-brand-card/80">
-              U
+              {initials}
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>{user?.email ?? 'My Account'}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <User className="mr-2 h-4 w-4" />
               Profile
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate('/settings')}>
               <Settings className="mr-2 h-4 w-4" />
               Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-400">
+            <DropdownMenuItem className="text-red-400" onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" />
               Logout
             </DropdownMenuItem>

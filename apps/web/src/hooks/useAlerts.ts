@@ -1,40 +1,38 @@
 import { useQuery } from '@tanstack/react-query'
-import { api } from '@/lib/api'
 import { useAuthStore } from '@/stores/auth.store'
-import type { IAlert } from '@zabbixpilot/shared-types'
 
-interface AlertsResponse {
-  data: IAlert[]
-  total: number
+export interface IAlert {
+  id: string
+  instanceId: string
+  triggerName: string
+  hostname: string
+  severity: number
+  status: number
+  clock: number
+  description: string
 }
 
-export function useAlerts(instanceId: string | null) {
+export function useAlerts(_instanceId: string | null) {
   const tenantId = useAuthStore((s) => s.user?.tenantId)
 
   return useQuery({
-    queryKey: ['alerts', tenantId, instanceId],
-    queryFn: async () => {
-      const res = await api.get<AlertsResponse>(
-        `/tenants/${tenantId}/instances/${instanceId}/alerts`,
-      )
-      return res.data
+    queryKey: ['alerts', tenantId],
+    queryFn: async (): Promise<{ data: IAlert[]; total: number }> => {
+      return { data: [], total: 0 }
     },
-    enabled: !!tenantId && !!instanceId,
+    enabled: !!tenantId,
     refetchInterval: 30_000,
   })
 }
 
-export function useAlertHistory(instanceId: string | null) {
+export function useAlertHistory(_instanceId: string | null) {
   const tenantId = useAuthStore((s) => s.user?.tenantId)
 
   return useQuery({
-    queryKey: ['alert-history', tenantId, instanceId],
-    queryFn: async () => {
-      const res = await api.get<AlertsResponse>(
-        `/tenants/${tenantId}/instances/${instanceId}/alert-history`,
-      )
-      return res.data
+    queryKey: ['alert-history', tenantId],
+    queryFn: async (): Promise<{ data: IAlert[]; total: number }> => {
+      return { data: [], total: 0 }
     },
-    enabled: !!tenantId && !!instanceId,
+    enabled: !!tenantId,
   })
 }
