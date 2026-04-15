@@ -12,7 +12,9 @@ import TemplateListPage from './pages/template-builder/TemplateListPage.js'
 import TemplateBuilderPage from './pages/template-builder/TemplateBuilderPage.js'
 import NocPage from './pages/noc/NocPage.js'
 import ServicesPage from './pages/services/ServicesPage.js'
+import ServiceDetailPage from './pages/services/ServiceDetailPage.js'
 import ReportsPage from './pages/reports/ReportsPage.js'
+import SlaReportPage from './pages/reports/SlaReportPage.js'
 import AuditPage from './pages/audit/AuditPage.js'
 import SettingsPage from './pages/settings/SettingsPage.js'
 import ZabbixInstancesPage from './pages/settings/ZabbixInstancesPage.js'
@@ -34,7 +36,9 @@ export default function App(): React.ReactElement {
             <Route path="/template-builder/:templateId" element={<TemplateBuilderPage />} />
             <Route path="/noc" element={<NocPage />} />
             <Route path="/services" element={<ServicesPage />} />
+            <Route path="/services/:serviceId" element={<ServiceDetailPage />} />
             <Route path="/reports" element={<ReportsPage />} />
+            <Route path="/reports/:reportId" element={<SlaReportPage />} />
             <Route path="/audit" element={<AuditPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/settings/zabbix-instances" element={<ZabbixInstancesPage />} />

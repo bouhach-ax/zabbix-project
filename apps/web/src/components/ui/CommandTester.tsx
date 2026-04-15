@@ -58,9 +58,9 @@ export function CommandTester({ onTest, className }: CommandTesterProps) {
           className={cn(
             'flex-1 rounded-md border px-3 py-2',
             'font-mono text-sm',
-            'bg-white dark:bg-brand-surface',
-            'text-gray-900 dark:text-gray-100',
-            'border-gray-300 dark:border-gray-600',
+            'bg-brand-surface',
+            'text-gray-900',
+            'border-gray-300',
             'placeholder:text-gray-400 dark:placeholder:text-gray-500',
             'outline-none focus:ring-2 focus:ring-primary/50',
             'transition-colors duration-fast ease-out-standard',
@@ -117,7 +117,7 @@ export function CommandTester({ onTest, className }: CommandTesterProps) {
               </span>
             </div>
             {result.executionTimeMs !== undefined && (
-              <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+              <span className="flex items-center gap-1 text-xs text-gray-500">
                 <Clock className="h-3 w-3" />
                 {result.executionTimeMs}ms
               </span>

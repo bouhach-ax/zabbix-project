@@ -49,7 +49,7 @@ export function ServiceHealthCard({ service, onClick, className }: ServiceHealth
       }}
       className={cn(
         'rounded-lg border p-4',
-        'bg-white dark:bg-brand-card dark:border-gray-700',
+        'bg-brand-card border-gray-700',
         'shadow-sm transition-all duration-fast ease-out-standard',
         onClick && 'cursor-pointer hover:shadow-md hover:border-primary/50 dark:hover:border-primary/50',
         className,
@@ -82,14 +82,14 @@ export function ServiceHealthCard({ service, onClick, className }: ServiceHealth
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
+            <span className="text-sm font-bold text-gray-900">
               {service.availability.toFixed(1)}%
             </span>
           </div>
         </div>
 
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
+          <h3 className="truncate text-sm font-semibold text-gray-900">
             {service.name}
           </h3>
 
@@ -102,13 +102,13 @@ export function ServiceHealthCard({ service, onClick, className }: ServiceHealth
             >
               {isCompliant ? 'SLA Compliant' : 'SLA Breach'}
             </span>
-            <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+            <span className="flex items-center gap-1 text-xs text-gray-500">
               <Activity className="h-3.5 w-3.5" />
               Target: {service.slaTarget}%
             </span>
           </div>
 
-          <div className="mt-1.5 flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+          <div className="mt-1.5 flex items-center gap-1 text-xs text-gray-500">
             <Layers className="h-3.5 w-3.5" />
             {service.componentCount} component{service.componentCount !== 1 ? 's' : ''}
           </div>

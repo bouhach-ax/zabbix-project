@@ -48,15 +48,15 @@ const envSchema = z.object({
     .default('false'),
 
   // Optional — AWX
-  AWX_URL: z.string().url().optional(),
+  AWX_URL: z.string().optional(),
   AWX_TOKEN: z.string().optional(),
   AWX_ORG_ID: z.coerce.number().int().optional(),
 
   // Optional — ITSM
-  SERVICENOW_URL: z.string().url().optional(),
+  SERVICENOW_URL: z.string().optional(),
   SERVICENOW_USER: z.string().optional(),
   SERVICENOW_PASS: z.string().optional(),
-  JIRA_URL: z.string().url().optional(),
+  JIRA_URL: z.string().optional(),
   JIRA_TOKEN: z.string().optional(),
 
   // Optional — Slack
@@ -64,7 +64,7 @@ const envSchema = z.object({
   SLACK_DEFAULT_CHANNEL: z.string().optional(),
 
   // Optional — Teams
-  TEAMS_WEBHOOK_URL: z.string().url().optional(),
+  TEAMS_WEBHOOK_URL: z.string().optional(),
 })
 
 export type Env = z.infer<typeof envSchema>

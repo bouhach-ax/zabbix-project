@@ -34,17 +34,17 @@ function TopBar() {
   const breadcrumbs = segments.map((seg) => ROUTE_LABELS[seg] ?? seg)
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-6 dark:border-gray-700 dark:bg-brand-surface">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-gray-700 bg-brand-surface px-6">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1 text-sm">
         {breadcrumbs.map((label, i) => (
           <span key={i} className="flex items-center gap-1">
-            {i > 0 && <ChevronRight className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500" />}
+            {i > 0 && <ChevronRight className="h-3.5 w-3.5 text-gray-500" />}
             <span
               className={cn(
                 i === breadcrumbs.length - 1
-                  ? 'font-medium text-gray-900 dark:text-gray-100'
-                  : 'text-gray-500 dark:text-gray-400'
+                  ? 'font-medium text-gray-100'
+                  : 'text-gray-400'
               )}
             >
               {label}
@@ -57,7 +57,7 @@ function TopBar() {
       <div className="flex items-center gap-2">
         {/* Notifications */}
         <button
-          className="relative rounded-md p-2 text-gray-500 transition-colors duration-fast hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-brand-card dark:hover:text-gray-200"
+          className="relative rounded-md p-2 text-gray-400 transition-colors duration-fast hover:bg-brand-card hover:text-gray-200"
           aria-label="Notifications"
         >
           <Bell className="h-5 w-5" />
@@ -66,7 +66,7 @@ function TopBar() {
         {/* User menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-xs font-medium text-gray-700 transition-colors duration-fast hover:bg-gray-200 dark:bg-brand-card dark:text-gray-300 dark:hover:bg-brand-card/80">
+            <button className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-card text-xs font-medium text-gray-300 transition-colors duration-fast hover:bg-brand-card/80">
               U
             </button>
           </DropdownMenuTrigger>
@@ -82,7 +82,7 @@ function TopBar() {
               Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-600 dark:text-red-400">
+            <DropdownMenuItem className="text-red-400">
               <LogOut className="mr-2 h-4 w-4" />
               Logout
             </DropdownMenuItem>

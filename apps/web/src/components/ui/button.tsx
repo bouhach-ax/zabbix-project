@@ -9,13 +9,13 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-primary text-white hover:bg-primary-hover focus-visible:ring-primary dark:focus-visible:ring-offset-brand-dark',
+          'bg-primary text-white hover:bg-primary-hover focus-visible:ring-primary focus-visible:ring-offset-brand-dark',
         secondary:
-          'bg-brand-dark text-white hover:bg-brand-surface focus-visible:ring-brand-dark dark:bg-brand-surface dark:hover:bg-brand-card',
+          'bg-brand-surface text-white hover:bg-brand-card focus-visible:ring-brand-dark',
         outline:
-          'border border-gray-300 bg-transparent hover:bg-gray-100 text-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-brand-card',
+          'border border-gray-600 bg-transparent text-gray-200 hover:bg-brand-card',
         ghost:
-          'hover:bg-gray-100 text-gray-700 dark:text-gray-300 dark:hover:bg-brand-card',
+          'text-gray-300 hover:bg-brand-card',
         danger:
           'bg-red-500 text-white hover:bg-red-600 focus-visible:ring-red-500',
         link: 'text-primary underline-offset-4 hover:underline',

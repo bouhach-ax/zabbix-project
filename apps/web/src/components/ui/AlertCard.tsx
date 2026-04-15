@@ -62,7 +62,7 @@ export function AlertCard({ alert, compact = false, selected = false, onClick, c
         }
       }}
       className={cn(
-        'border-l-4 rounded-r-lg border bg-white dark:bg-brand-card dark:border-gray-700',
+        'border-l-4 rounded-r-lg border bg-brand-card border-gray-700',
         'transition-all duration-fast ease-out-standard',
         SEVERITY_BORDER[alert.severity],
         onClick && 'cursor-pointer hover:shadow-md',
@@ -78,7 +78,7 @@ export function AlertCard({ alert, compact = false, selected = false, onClick, c
             <SeverityIcon severity={alert.severity} />
             <span
               className={cn(
-                'truncate font-medium text-gray-900 dark:text-gray-100',
+                'truncate font-medium text-gray-900',
                 compact ? 'text-xs' : 'text-sm',
               )}
             >
@@ -86,8 +86,8 @@ export function AlertCard({ alert, compact = false, selected = false, onClick, c
             </span>
           </div>
           <div className={cn('flex items-center gap-2 mt-1', compact ? 'text-[11px]' : 'text-xs')}>
-            <span className="text-gray-500 dark:text-gray-400">{alert.hostname}</span>
-            <span className="flex items-center gap-0.5 text-gray-400 dark:text-gray-500">
+            <span className="text-gray-500">{alert.hostname}</span>
+            <span className="flex items-center gap-0.5 text-gray-400">
               <Clock className="h-3 w-3" />
               {timeAgo(alert.firstOccurrence)}
             </span>

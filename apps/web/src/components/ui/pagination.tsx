@@ -75,7 +75,7 @@ PaginationNext.displayName = 'PaginationNext'
 const PaginationEllipsis = ({ className, ...props }: React.ComponentProps<'span'>) => (
   <span
     aria-hidden
-    className={cn('flex h-10 w-10 items-center justify-center text-gray-400 dark:text-gray-500', className)}
+    className={cn('flex h-10 w-10 items-center justify-center text-gray-400', className)}
     {...props}
   >
     <MoreHorizontal className="h-4 w-4" />

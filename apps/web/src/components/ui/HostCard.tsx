@@ -51,7 +51,7 @@ export function HostCard({ host, onClick, className }: HostCardProps) {
       }}
       className={cn(
         'rounded-lg border p-4',
-        'bg-white dark:bg-brand-card dark:border-gray-700',
+        'bg-brand-card border-gray-700',
         'shadow-sm transition-all duration-fast ease-out-standard',
         onClick && 'cursor-pointer hover:shadow-md hover:border-primary/50 dark:hover:border-primary/50',
         className,
@@ -60,14 +60,14 @@ export function HostCard({ host, onClick, className }: HostCardProps) {
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <Monitor className="h-4 w-4 shrink-0 text-gray-500 dark:text-gray-400" />
-            <h3 className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
+            <Monitor className="h-4 w-4 shrink-0 text-gray-500" />
+            <h3 className="truncate text-sm font-semibold text-gray-900">
               {host.hostname}
             </h3>
           </div>
           <div className="mt-1.5 flex items-center gap-2">
             <Network className="h-3.5 w-3.5 shrink-0 text-gray-400" />
-            <span className="font-mono text-xs text-gray-500 dark:text-gray-400">
+            <span className="font-mono text-xs text-gray-500">
               {host.ipAddress}
             </span>
           </div>
@@ -75,7 +75,7 @@ export function HostCard({ host, onClick, className }: HostCardProps) {
         <StatusBadge status={HOST_STATUS_TO_BADGE[host.status] ?? 'UNKNOWN'} />
       </div>
 
-      <div className="mt-3 flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+      <div className="mt-3 flex items-center gap-3 text-xs text-gray-500">
         {host.os && (
           <span className="flex items-center gap-1">
             <Cpu className="h-3.5 w-3.5" />

@@ -32,7 +32,7 @@ const TableFooter = React.forwardRef<HTMLTableSectionElement, React.HTMLAttribut
   ({ className, ...props }, ref) => (
     <tfoot
       ref={ref}
-      className={cn('border-t bg-gray-50 font-medium dark:bg-brand-card/50', className)}
+      className={cn('border-t border-gray-700 bg-brand-card/50 font-medium', className)}
       {...props}
     />
   )
@@ -44,9 +44,8 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
     <tr
       ref={ref}
       className={cn(
-        'border-b border-gray-200 transition-colors hover:bg-gray-50 data-[state=selected]:bg-gray-100',
-        'dark:border-gray-700 dark:hover:bg-brand-card/50 dark:data-[state=selected]:bg-brand-card',
-        'dark:odd:bg-brand-surface/30',
+        'border-b border-gray-700 transition-colors hover:bg-brand-card/50 data-[state=selected]:bg-brand-card',
+        'odd:bg-brand-surface/30',
         className
       )}
       {...props}
@@ -60,7 +59,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
     <th
       ref={ref}
       className={cn(
-        'h-10 px-4 text-left align-middle font-medium text-gray-500 dark:text-gray-400 [&:has([role=checkbox])]:pr-0',
+        'h-10 px-4 text-left align-middle font-medium text-gray-400 [&:has([role=checkbox])]:pr-0',
         className
       )}
       {...props}
@@ -74,7 +73,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<
     <td
       ref={ref}
       className={cn(
-        'p-4 align-middle text-gray-900 dark:text-gray-200 [&:has([role=checkbox])]:pr-0',
+        'p-4 align-middle text-gray-200 [&:has([role=checkbox])]:pr-0',
         className
       )}
       {...props}
@@ -85,7 +84,7 @@ TableCell.displayName = 'TableCell'
 
 const TableCaption = React.forwardRef<HTMLTableCaptionElement, React.HTMLAttributes<HTMLTableCaptionElement>>(
   ({ className, ...props }, ref) => (
-    <caption ref={ref} className={cn('mt-4 text-sm text-gray-500 dark:text-gray-400', className)} {...props} />
+    <caption ref={ref} className={cn('mt-4 text-sm text-gray-400', className)} {...props} />
   )
 )
 TableCaption.displayName = 'TableCaption'

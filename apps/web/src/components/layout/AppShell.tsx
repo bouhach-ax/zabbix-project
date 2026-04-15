@@ -12,7 +12,7 @@ import { TopBar } from '@/components/layout/TopBar'
  */
 function AppShell() {
   return (
-    <div className="dark flex h-screen bg-gray-50 font-ui dark:bg-brand-dark">
+    <div className="flex h-screen bg-brand-dark font-ui text-gray-100">
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar />

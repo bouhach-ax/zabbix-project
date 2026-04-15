@@ -13,7 +13,14 @@
       "Bash(npx vitest:*)",
       "Bash(DATABASE_URL=\"postgresql://x:y@localhost:5432/z\" npx prisma validate)",
       "Bash(xargs ls *)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(grep -c \"bg-white\" /Users/simo/Claude/zabbix-project/apps/web/src/components/ui/*.tsx)",
+      "Bash(grep -v \":0$\")",
+      "Bash(sed -i '' \"s/bg-white dark:bg-brand-card dark:border-gray-700/bg-brand-card border-gray-700/g\" AlertCard.tsx)",
+      "Bash(sed -i '' \"s/bg-white dark:bg-brand-surface/bg-brand-surface/g\" CommandTester.tsx)",
+      "Bash(sed -i '' \"s/bg-white dark:bg-brand-card dark:border-gray-700/bg-brand-card border-gray-700/g\" HostCard.tsx)",
+      "Bash(sed -i '' \"s/border-gray-300 bg-white dark:border-gray-600 dark:bg-brand-surface/border-gray-600 bg-brand-surface/g\" ProgressStepper.tsx)",
+      "Bash(sed -i '' \"s/bg-white dark:bg-brand-card dark:border-gray-700/bg-brand-card border-gray-700/g\" ServiceHealthCard.tsx)"
     ]
   }
 }

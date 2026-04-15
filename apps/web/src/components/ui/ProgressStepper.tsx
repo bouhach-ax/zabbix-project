@@ -17,9 +17,9 @@ interface ProgressStepperProps {
 
 const STEP_STYLES: Record<StepStatus, { circle: string; line: string; text: string }> = {
   pending: {
-    circle: 'border-gray-300 bg-white dark:border-gray-600 dark:bg-brand-surface',
+    circle: 'border-gray-600 bg-brand-surface',
     line: 'bg-gray-300 dark:bg-gray-600',
-    text: 'text-gray-500 dark:text-gray-400',
+    text: 'text-gray-500',
   },
   running: {
     circle: 'border-primary bg-primary/10 dark:bg-primary/20',

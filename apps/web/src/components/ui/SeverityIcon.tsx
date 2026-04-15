@@ -37,7 +37,7 @@ export function SeverityIcon({ severity, showLabel = false, className }: Severit
         )}
       />
       {showLabel && (
-        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+        <span className="text-xs font-medium text-gray-700">
           {config.label}
         </span>
       )}

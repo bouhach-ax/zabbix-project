@@ -8,7 +8,7 @@ const STATUS_CONFIG: Record<
 > = {
   OK: { bg: 'bg-green-50 dark:bg-green-950', text: 'text-green-700 dark:text-green-400', dot: 'bg-green-500' },
   PROBLEM: { bg: 'bg-red-50 dark:bg-red-950', text: 'text-red-700 dark:text-red-400', dot: 'bg-red-500' },
-  UNKNOWN: { bg: 'bg-gray-50 dark:bg-gray-800', text: 'text-gray-600 dark:text-gray-400', dot: 'bg-gray-400' },
+  UNKNOWN: { bg: 'bg-gray-50 dark:bg-gray-800', text: 'text-gray-600', dot: 'bg-gray-400' },
   WARNING: { bg: 'bg-amber-50 dark:bg-amber-950', text: 'text-amber-700 dark:text-amber-400', dot: 'bg-amber-500' },
   DISASTER: { bg: 'bg-red-100 dark:bg-red-900', text: 'text-red-800 dark:text-red-300', dot: 'bg-red-600', pulse: true },
 }
